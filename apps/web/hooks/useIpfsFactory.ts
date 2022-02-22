@@ -36,7 +36,12 @@ export const useIpfsFactory = (): IIPFSFactoryResponse => {
 		} else {
 			try {
 				console.time('IPFS Started')
-				ipfs = await create()
+				ipfs = await create({
+					repo: String(Math.random() + Date.now()),
+					init: {
+						algorithm: "Ed25519"
+					}
+				})
 				console.timeEnd('IPFS Started')
 			} catch (error) {
 				console.error('IPFS init error:', error)
