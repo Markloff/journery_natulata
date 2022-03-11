@@ -1,0 +1,16 @@
+{
+	"name": "natula-cli",
+	"version": "1.0.0",
+	"bin": {
+		"natula": "./bin/index.js"
+	},
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "rm -rf ./lib/ && tsc"
+	},
+	"dependencies": {
+		"chalk": "^5.0.1",
+		"commander": "^9.0.0",
+		"natula-core": "workspace:*"
+	}
+}
