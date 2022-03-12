@@ -1,8 +1,8 @@
-import { ICommandService, IInstantiationService } from 'core';
+import { ICommandService } from 'core';
 declare class Service {
-    private readonly _instantiationService;
     private readonly _commandService;
-    constructor(_instantiationService: IInstantiationService, _commandService: ICommandService);
+    constructor(_commandService: ICommandService);
+    executeCommand<T = any>(commandId: string, ...args: any[]): Promise<T | undefined>;
 }
 export declare const createService: () => Service;
 export {};
