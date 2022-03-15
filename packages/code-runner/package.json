@@ -1,0 +1,18 @@
+{
+    "name": "code-runner",
+    "version": "0.0.0",
+    "main": "./index.tsx",
+    "types": "./index.tsx",
+    "license": "MIT",
+	"dependencies": {
+		"@monaco-editor/react": "^4.3.1",
+		"monaco-editor": "^0.33.0"
+	},
+    "devDependencies": {
+        "@types/react": "^17.0.39",
+        "@types/react-dom": "^17.0.11",
+        "tsconfig": "workspace:*",
+        "config": "workspace:*",
+        "typescript": "^4.5.3"
+    }
+}

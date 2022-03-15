@@ -1,7 +1,16 @@
 import React, { useEffect } from 'react';
+import { Button } from 'ui';
+import { GetStaticProps, NextPage } from 'next';
+import { MdxFile } from '../server/content-reader';
 
 
-export default function Web() {
+
+type StaticProps = {
+	mdxList: MdxFile[]
+}
+const IndexPage: NextPage<StaticProps> = (props) => {
+	const { mdxList } = props;
+	console.log(mdxList);
 
 	useEffect(() => {
 
@@ -10,6 +19,10 @@ export default function Web() {
 	return (
 		<div>
 			deploy with vercel
+			<Button />
+
 		</div>
 	)
 }
+
+export default IndexPage;
