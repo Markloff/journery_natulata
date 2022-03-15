@@ -14,6 +14,7 @@
 		"@swc/core": "^1.2.153"
 	},
 	"devDependencies": {
-		"tsconfig": "workspace:*"
+		"tsconfig": "workspace:*",
+		"@types/node": "^17.0.21"
 	}
 }
