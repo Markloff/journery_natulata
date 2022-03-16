@@ -4,13 +4,15 @@ import { serialize } from 'next-mdx-remote/serialize'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import Link from 'next/link'
-import path from 'path'
+import path from 'path';
 import CustomLink from '../../components/CustomLink'
 
 import { postFilePaths, POSTS_PATH } from '../../utils/mdx';
 import { CodeRunner } from 'code-runner';
+import PostPageBody from '../../view/PostPage';
+import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-const PostPageBody = dynamic(() => import('../../view/PostPage'), { ssr: false })
+
 // Custom components/renderers to pass to MDX.
 // Since the MDX files aren't loaded by webpack, they have no knowledge of how
 // to handle import statements. Instead, you must include components in scope
@@ -48,8 +50,10 @@ export default function PostPage({ source, frontMatter }) {
 	)
 }
 
+
 export const getStaticProps = async ({ params }) => {
 	const postFilePath = path.join(POSTS_PATH, `${params.slug}.mdx`)
+
 	const source = fs.readFileSync(postFilePath)
 
 	const { content, data } = matter(source)
@@ -63,12 +67,14 @@ export const getStaticProps = async ({ params }) => {
 		scope: data,
 	})
 
-	return {
-		props: {
-			source: mdxSource,
-			frontMatter: data,
-		},
+	const result = {
+		source: mdxSource,
+		frontMatter: data,
 	}
+
+	return {
+		props: result
+	};
 }
 
 export const getStaticPaths = async () => {
