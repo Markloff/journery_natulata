@@ -9,8 +9,10 @@ export const CodeRunner: React.FC<CodeRunnerProps> = (props) => {
 			<Editor
 				defaultLanguage='typescript'
 				options={{
-					fontSize: 14
+					fontSize: 14,
+					fontFamily: '"Cascadia Mono-SemiLight",Menlo,Monaco,Consolas,monospace',
 				}}
+				theme={'vs-dark'}
 				{...props}
 			/>
 		</div>
