@@ -8,6 +8,35 @@ author: marklov
 
 # 实现自己的 Event Emitter
 
+<blockquote>
+	设想这样的场景，请提供一个通用的 Event Emitter 能力，可以给任意一个 class 组合使用
+</blockquote>
+
+使用姿势:
+
+```ts
+class QQMusicPlayer {
+    private readonly _onPlayStatusChange: Emitter<string> = new Emitter<string>();
+    public readonly onPlayStatusChange = this._onPlayStatusChange.event;
+
+    private readonly _audioEL: HTMLAudioElement;
+
+	constructor() {
+		this._audioEL = document.createElement('audio');
+		this._audioEL.oncanplay = () => {
+			this._onPlayStatusChange.fire('canPlay')
+		}
+	}
+
+}
+
+const player = new QQMusicPlayer();
+
+player.onPlayStatusChange((status: string) => {
+    console.log(status)
+})
+```
+
 
 ## h2 Heading
 

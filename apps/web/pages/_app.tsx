@@ -1,5 +1,4 @@
-import '../styles/blog-theme.css';
-
+import 'nextra-theme-blog/style.css';
 import '../styles/main.css';
 
 
