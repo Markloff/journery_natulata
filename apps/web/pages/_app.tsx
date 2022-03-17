@@ -1,17 +1,13 @@
-import React from 'react';
-import NextApp from 'next/app';
+import '../styles/blog-theme.css';
 
-import { ChakraProvider } from '@chakra-ui/react'
-import { theme } from './styles/theme';
+import '../styles/main.css';
 
-export default class App extends NextApp {
 
-	render(): JSX.Element {
-		const { Component, pageProps } = this.props;
-		return (
-			<ChakraProvider theme={theme}>
-				<Component {...pageProps} />
-			</ChakraProvider>
-		)
-	}
+export default function Nextra({ Component, pageProps }) {
+
+	return (
+		<>
+			<Component {...pageProps} />
+		</>
+	);
 }
