@@ -1,0 +1,231 @@
+import Callout from 'nextra-theme-docs/callout';
+
+# 实现自己的 Event Emitter
+
+## 概览
+
+<blockquote>
+	设想这样的场景，请提供一个通用的 Event Emitter 能力
+</blockquote>
+
+使用姿势:
+
+```ts
+class QQMusicPlayer {
+    private readonly _onPlayStatusChange: Emitter<string> = new Emitter<string>();
+    public readonly onPlayStatusChange = this._onPlayStatusChange.event;
+
+    private readonly _audioEL: HTMLAudioElement;
+
+	constructor() {
+		this._audioEL = document.createElement('audio');
+		this._audioEL.oncanplay = () => {
+			this._onPlayStatusChange.fire('canPlay')
+		}
+	}
+
+}
+
+const player = new QQMusicPlayer();
+
+player.onPlayStatusChange((status: string) => {
+    console.log(status)
+})
+```
+
+## 总体设计
+
+- 使用数组或者链表保存传入的回调函数
+- Emitter 内部的成员变量具有一定的懒加载能力，如果没有注册事件，则不会实例化
+- 开放给外部的注册 register 能力，以及内部的 fire 能力需要区分开，以便实现上述能力
+
+## 详细设计
+
+### 链表还是数组
+
+在存储回调函数的容器选择上，考虑到对后续 `dispose` 的支持 / 内存空间占用的优化，考虑使用链表实现
+
+<blockquote>
+	dispose 代表释放
+</blockquote>
+
+
+### 如何实现 Lazy Instantiation
+
+访问 emitter.event 时，实例化未实例化的成员变量
+
+### 如何实现 listener 的 unhook
+
+对注册事件的行为，返回一个 实现了 IDisposable 能力的变量，当其执行了 dispose 的时候，执行对 listener 的 unhook，具体实现方式就是从链表上将这个 listener `node` 脱钩，那么 fire event 的时候，自然就跳过了这个 listener
+
+## 实现
+
+先实现一个 **链表** `linkedList.ts`
+
+**Node**
+
+```ts
+class Node<E> {
+	static readonly Undefined = new Node<any>(undefined);
+
+	element: E;
+	next: Node<E>;
+	prev: Node<E>;
+	constructor(element: E) {
+		this.element = element;
+		this.next = Node.Undefined;
+		this.prev = Node.Undefined;
+	}
+}
+export class LinkedList<E> {
+	private _first: Node<E> = Node.Undefined;
+	private _last: Node<E> = Node.Undefined;
+	private _size: number = 0;
+
+	get size(): number {
+		return this._size;
+	}
+
+	isEmpty(): boolean {
+		return this._first === Node.Undefined;
+	}
+
+	shift(): E | undefined {
+		if (this._first === Node.Undefined) {
+			return undefined;
+		} else {
+			const res = this._first.element;
+			this._remove(this._first);
+			return res;
+		}
+	}
+
+	pop(): E | undefined {
+		if (this._last === Node.Undefined) {
+			return undefined;
+		} else {
+			const res = this._last.element;
+			this._remove(this._last);
+			return res;
+		}
+	}
+
+	clear(): void {
+		let node = this._first;
+		while (node !== Node.Undefined) {
+			const next = node.next;
+			node.prev = Node.Undefined;
+			node.next = Node.Undefined;
+			node = next;
+		}
+		this._first = Node.Undefined;
+		this._last = Node.Undefined;
+		this._size = 0;
+	}
+
+	unshift(element: E): () => void {
+		return this._insert(element, false);
+	}
+
+	push(element: E): () => void {
+		return this._insert(element, true);
+	}
+
+	private _insert(element: E, atTheEnd: boolean): () => void {
+		const newNode = new Node(element);
+		if (this._first === Node.Undefined) {
+			this._first = newNode;
+			this._last = newNode;
+		} else if (atTheEnd) {
+			const oldLast = this._last!;
+			this._last = newNode;
+			newNode.prev = oldLast;
+			oldLast.next = newNode;
+		} else {
+			const oldFirst = this._first;
+			this._first = newNode;
+			newNode.next = oldFirst;
+			oldFirst.prev = newNode;
+		}
+		this._size += 1;
+		let didRemove = false;
+		return () => {
+			if (!didRemove) {
+				didRemove = true;
+				this._remove(newNode);
+			}
+		};
+	}
+	private _remove(node: Node<E>): void {
+		if (node.prev !== Node.Undefined && node.next !== Node.Undefined) {
+			// middle
+			const anchor = node.prev;
+			anchor.next = node.next;
+			node.next.prev = anchor;
+
+		} else if (node.prev === Node.Undefined && node.next === Node.Undefined) {
+			// only node
+			this._first = Node.Undefined;
+			this._last = Node.Undefined;
+
+		} else if (node.next === Node.Undefined) {
+			// last
+			this._last = this._last!.prev!;
+			this._last.next = Node.Undefined;
+
+		} else if (node.prev === Node.Undefined) {
+			// first
+			this._first = this._first!.next!;
+			this._first.prev = Node.Undefined;
+		}
+
+		// done
+		this._size -= 1;
+	}
+
+	*[Symbol.iterator](): Iterator<E> {
+		let node = this._first;
+		while (node !== Node.Undefined) {
+			yield node.element;
+			node = node.next;
+		}
+	}
+}
+```
+
+<Callout>
+	- 这里有个小技巧, 设置一个静态变量 Node.Undefined, 作为兜底值，比直接使用 js 默认的 `undefined` / `null` 会方便，提供更好的防御性编程
+	- 链表的插入操作返回一个函数，执行后，对这次操作进行撤回
+	- 实现 `[Symbol.iterator]` 并标注为 *，标注为可迭代，通过 yield 持续抛出 node.element
+</Callout>
+
+
+`lifecycle.ts`
+
+```ts
+export interface IDisposable {
+    dispose(): void;
+}
+```
+
+`event.ts`
+
+定义 Event
+```ts
+export interface Event<T> {
+    (listener: (e: T) => any, thisArgs?: any, disposables?: IDisposable[]): IDisposable;
+}
+
+
+```
+
+
+
+
+
+
+
+
+
+
+

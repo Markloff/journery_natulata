@@ -9,7 +9,7 @@ author: marklov
 # 实现自己的 Event Emitter
 
 <blockquote>
-	设想这样的场景，请提供一个通用的 Event Emitter 能力，可以给任意一个 class 组合使用
+	设想这样的场景，请提供一个通用的 Event Emitter 能力
 </blockquote>
 
 使用姿势:
@@ -37,79 +37,73 @@ player.onPlayStatusChange((status: string) => {
 })
 ```
 
+## 总体设计
 
-## h2 Heading
+- 使用数组或者链表保存传入的回调函数
+- Emitter 内部的成员变量具有一定的懒加载能力，如果没有注册事件，则不会实例化
+- 开放给外部的注册 register 能力，以及内部的 fire 能力需要区分开，以便实现上述能力
 
-### h3 Heading
+## 详细设计
 
-#### h4 Heading
+### 链表还是数组
 
-##### h5 Heading
+在存储回调函数的容器选择上，考虑到对后续 `dispose` 的支持 / 内存空间占用的优化，考虑使用链表实现
 
-###### h6 Heading
+<blockquote>
+	dispose 代表释放
+</blockquote>
 
-## Emphasis
 
-**This is bold text**
+### 如何实现 Lazy Instantiation
 
-_This is italic text_
+访问 emitter.event 时，实例化未实例化的成员变量
 
-~~Strikethrough~~
+### 如何实现 listener 的 unhook
 
-## Blockquotes
+对注册事件的行为，返回一个 实现了 IDisposable 能力的变量，当其执行了 dispose 的时候，执行对 listener 的 unhook，具体实现方式就是从链表上将这个 listener `node` 脱钩，那么 fire event 的时候，自然就跳过了这个 listener
 
-> Develop. Preview. Ship. – Vercel
+## 实现
 
-## Lists
+先实现一个 **链表** `linkedList.ts`
 
-Unordered
-
-- Lorem ipsum dolor sit amet
-- Consectetur adipiscing elit
-- Integer molestie lorem at massa
-
-Ordered
-
-1. Lorem ipsum dolor sit amet
-2. Consectetur adipiscing elit
-3. Integer molestie lorem at massa
-
-## Code
-
-Inline `code`
-
+**Node**
 
 ```ts
-interface A {
+class Node<E> {
+	static readonly Undefined = new Node<any>(undefined);
 
-}
-
-class B implements A {
-
+	element: E;
+	next: Node<E>;
+	prev: Node<E>;
+	constructor(element: E) {
+		this.element = element;
+		this.next = Node.Undefined;
+		this.prev = Node.Undefined;
+	}
 }
 ```
 
-## Tables
+<blockquote>
+	这里有个小技巧
+</blockquote>
 
-| **Option** | **Description**                                                                                                             |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| First      | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. |
-| Second     | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. |
-| Third      | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. |
 
-## Links
+`lifecycle.ts`
 
-- [Next.js](https://nextjs.org)
-- [Nextra](https://nextra.vercel.app/)
-- [Vercel](http://vercel.com)
+```ts
+export interface IDisposable {
+    dispose(): void;
+}
+```
 
-### Footnotes
 
-- Footnote [^1].
-- Footnote [^2].
 
-[^1]: Footnote **can have markup**
 
-    and multiple paragraphs.
 
-[^2]: Footnote text.
+
+
+
+
+
+
+
