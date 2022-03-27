@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Input } from '../../../components/Input';
-import { isEmailValid, isFullNameValid } from '../../../utils/validate';
+import { Input } from '../../components/Input';
+import { isEmailValid, isFullNameValid } from '../../utils/validate';
 import { css } from '@emotion/react';
 
 

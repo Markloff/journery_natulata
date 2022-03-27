@@ -3,10 +3,10 @@ import styled from '@emotion/styled';
 import dynamic from 'next/dynamic';
 
 import { globalStyles } from '../../styles/shared';
-import { Header } from './modules/Header';
-import { Body } from './modules/Body';
-import { Footer } from './modules/Footer';
-import { IInviteForm, InviteForm } from './modules/InviteForm';
+import { Header } from '../../views/home/Header';
+import { Body } from '../../views/home/Body';
+import { Footer } from '../../views/home/Footer';
+import { IInviteForm, InviteForm } from '../../views/home/InviteForm';
 import { CGI_PATH, fetchCGI } from '../../utils/ajax';
 import { css } from '@emotion/react';
 const Modal = dynamic(() => import('../../components/Modal').then(module => module.Modal), { ssr: false })
@@ -150,7 +150,7 @@ const Index: React.FC = () => {
 					<p>You will be one of the first to experience Broccoli & Co. when we launch</p>
 				);
 		}
-	}, [errMessage, formData, status]);
+	}, [formData, status]);
 
 	return (
 		<>

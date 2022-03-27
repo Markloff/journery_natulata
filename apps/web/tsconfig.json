@@ -3,7 +3,8 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "pages/**/*.env.d.ts"
   ],
   "exclude": [
     "node_modules"
@@ -12,6 +13,7 @@
     "strict": false,
     "esModuleInterop": true,
     "strictNullChecks": false,
-    "types": ["@emotion/core"]
+    "jsx": "preserve",
+    "jsxImportSource": "@emotion/react"
   }
 }

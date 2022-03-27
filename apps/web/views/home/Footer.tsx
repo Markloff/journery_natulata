@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import { HEADER_HEIGHT } from '../../../styles/shared/const';
+import { HEADER_HEIGHT } from '../../styles/shared/const';
 
 
 const FooterContainer = styled.footer`
