@@ -1,105 +1,202 @@
 import React, { useMemo, useState } from 'react';
 import { Input } from '../../../components/Input';
-import styled from '@emotion/styled';
-import { normalizeRepeatedSlashes } from 'next/dist/shared/lib/utils';
 import { isEmailValid, isFullNameValid } from '../../../utils/validate';
+import { css } from '@emotion/react';
 
 
 interface IInviteForm {
 	validate(): boolean;
+	getData(): Record<string, any>;
+}
+
+type FormProps = {
+	data: Record<string, any>;
+}
+
+
+type FormItemProps = {
+	validate: boolean;
+	message: string;
+}
+
+const FormItem: React.FC<FormItemProps> = (props) => {
+	const { children, validate, message } = props;
+
+	const wrapperStyle = css`
+		position: relative;
+		margin-bottom: .2rem;
+	`;
+
+	const innerItemStyle = css`
+		border: 1px solid ${validate ? 'transparent' : '#ff7875'};
+		padding: 0.5px;
+		//position: absolute;
+	`;
+
+	const validateMessageWrapperStyle = css`
+		font-size: 0.85rem;
+		color: #ff7875;
+		height: 1rem;
+	`
+
+	return (
+		<div css={wrapperStyle}>
+			<div css={innerItemStyle}>
+				{children}
+			</div>
+			<div css={validateMessageWrapperStyle}>
+				{message}
+			</div>
+		</div>
+	)
 }
 
 // TODO 没有太多时间去封装一个类似Ant Design 那样的 Form / FormItem 就先简单表示一下
-const InviteForm = React.forwardRef<IInviteForm, {}>((props, ref) => {
-	const [fullName, setFullName] = useState('');
-	const [email, setEmail] = useState('');
-	const [confirmedEmail, setConfirmedEmail] = useState('');
+const InviteForm = React.forwardRef<IInviteForm, FormProps>((props, ref) => {
+	const { data } = props;
 
+	const [formData, setFormData] = useState(data);
+	const [validateInfo, setValidateInfo] = useState({
+		fullName: {
+			validate: true,
+			message: '',
+		},
+		email: {
+			validate: true,
+			message: '',
+		},
+		confirmedEmail: {
+			validate: true,
+			message: '',
+		}
+	});
 
-
-	const [fullNameHighlight, setFullNameHighlight] = useState(false);
-	const [emailHighlight, setEmailHighlight] = useState(false);
-	const [confirmedEmailHighlight, setConfirmedEmailHighlight] = useState(false);
-
+	const { fullName, email, confirmedEmail } = formData;
+	const { fullName: fullNameValidateInfo, email: emailValidateInfo, confirmedEmail: confirmedValidateEmailInfo } = validateInfo;
 
 
 	const handleInputValueChange = (value: string, filed: string) => {
-		switch (filed) {
-			case 'fullName':
-				setFullName(value);
-				break;
-			case 'email':
-				setEmail(value);
-				break;
-			case 'confirmedEmail':
-				setConfirmedEmail(value);
-				break;
-		}
+		setFormData(prevState => ({
+			...prevState,
+			[filed]: value
+		}))
 	}
 
 	const reset = () => {
-		setFullNameHighlight(false);
-		setEmailHighlight(false);
-		setConfirmedEmailHighlight(false);
+		setValidateInfo({
+			fullName: {
+				validate: true,
+				message: '',
+			},
+			email: {
+				validate: true,
+				message: '',
+			},
+			confirmedEmail: {
+				validate: true,
+				message: '',
+			}
+		})
 	}
 
 	const validate = (): boolean => {
 		reset();
+
+		const validateResult = [];
 		if (!fullName || !isFullNameValid(fullName)) {
-			setFullNameHighlight(true);
-			return false;
+			validateResult.push({
+				fullName: {
+					validate: false,
+					message: fullName ? 'Please enter a valid full name' : 'Please input your full name'
+				}
+			})
+		}
+		//
+		if (!email || !isEmailValid(email)) {
+			validateResult.push({
+				email: {
+					validate: false,
+					message: email ? 'Please enter a valid email address' : 'Please input email'
+				}
+			});
+		}
+		if (!confirmedEmail) {
+			validateResult.push({
+				confirmedEmail: {
+					validate: false,
+					message: 'Please enter an email address for confirm'
+				}
+			});
+		} else if (!isEmailValid(confirmedEmail) || confirmedEmail !== email) {
+			validateResult.push({
+				confirmedEmail: {
+					validate: false,
+					message: 'Please enter the same email as your email'
+				}
+			});
 		}
 
-		if (!email || !isEmailValid(email)) {
-			setEmailHighlight(true);
-			return false;
+		if (validateResult.length > 0) {
+			const newValidateState = validateResult.reduce((prev, curr) => {
+				return {
+					...prev,
+					...curr
+				}
+			}, {});
+			setValidateInfo(prevState => ({
+				...prevState,
+				...newValidateState
+			}))
 		}
-		if (!confirmedEmail || !isEmailValid(confirmedEmail) || confirmedEmail !== email) {
-			setConfirmedEmailHighlight(true);
-			return false;
-		}
-		console.log('true')
-		return true;
+
+		return validateResult.length === 0;
 	}
 
 	React.useImperativeHandle(ref, () => ({
-		validate
+		validate,
+		getData(): Record<string, any> {
+			return formData;
+		}
 	}))
 
 	const FullNamInput = useMemo(() => {
 		return (
-			<Input
-				defaultValue={fullName}
-				highlight={fullNameHighlight}
-				type={'text'}
-				placeholder={'Full Name'}
-				onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'fullName')}
-			/>
+			<FormItem validate={fullNameValidateInfo.validate} message={fullNameValidateInfo.message}>
+				<Input
+					defaultValue={fullName}
+					type={'text'}
+					placeholder={'Full Name'}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'fullName')}
+				/>
+			</FormItem>
 		)
-	}, [fullName, fullNameHighlight]);
+	}, [fullName, fullNameValidateInfo]);
 
 	const EmailInput = useMemo(() => {
 		return (
-			<Input
-				defaultValue={email}
-				highlight={emailHighlight}
-				type={'email'}
-				placeholder={'Email'}
-				onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'email')}
-			/>
+			<FormItem validate={emailValidateInfo.validate} message={emailValidateInfo.message}>
+				<Input
+					defaultValue={email}
+					type={'email'}
+					placeholder={'Email'}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'email')}
+				/>
+			</FormItem>
 		)
-	}, [email, emailHighlight]);
+	}, [email, emailValidateInfo]);
 
 	const ConfirmedEmailInput = useMemo(() => {
 		return (
-			<Input
-				highlight={confirmedEmailHighlight}
-				type={'email'}
-				placeholder={'Confirm Email'}
-				onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'confirmedEmail')}
-			/>
+			<FormItem validate={confirmedValidateEmailInfo.validate} message={confirmedValidateEmailInfo.message}>
+				<Input
+					defaultValue={confirmedEmail}
+					type={'email'}
+					placeholder={'Email'}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'confirmedEmail')}
+				/>
+			</FormItem>
 		)
-	}, [confirmedEmailHighlight]);
+	}, [confirmedEmail, confirmedValidateEmailInfo]);
 
 	return (
 		<div>

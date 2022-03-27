@@ -3,19 +3,15 @@ import { css } from '@emotion/react'
 import React from 'react';
 
 const InputWrapper = styled.div`
-	margin-bottom: .8rem;
 	display: flex;
 `;
 
-type InputProps = React.InputHTMLAttributes<any> & {
-	highlight: boolean;
-}
+type InputProps = React.InputHTMLAttributes<any>;
 
 const Input: React.FC<InputProps> = (props) => {
-	const { highlight, ...rest } = props;
 
 	const styles = css`
-		border: 1.5px solid ${highlight ? 'red' : 'rgba(0, 0, 0, 0.6)'};
+		border: 1.5px solid rgba(0, 0, 0, 0.6);
 		height: 2rem;
 		flex: 1;
 		padding: 0 0.5rem;
@@ -26,7 +22,7 @@ const Input: React.FC<InputProps> = (props) => {
 
 	return (
 		<InputWrapper>
-			<input {...rest} css={styles} />
+			<input {...props} css={styles} />
 		</InputWrapper>
 	)
 }
