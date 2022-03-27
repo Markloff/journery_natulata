@@ -191,7 +191,7 @@ const InviteForm = React.forwardRef<IInviteForm, FormProps>((props, ref) => {
 				<Input
 					defaultValue={confirmedEmail}
 					type={'email'}
-					placeholder={'Email'}
+					placeholder={'Confirm Email'}
 					onChange={(ev: React.ChangeEvent<HTMLInputElement>) => handleInputValueChange(ev.target.value, 'confirmedEmail')}
 				/>
 			</FormItem>
