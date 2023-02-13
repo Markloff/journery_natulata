@@ -1,0 +1,4 @@
+class Workspace {
+    static from() {
+    }
+}

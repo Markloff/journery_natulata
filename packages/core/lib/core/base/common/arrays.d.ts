@@ -15,7 +15,7 @@ export declare function binarySearch<T>(array: ReadonlyArray<T>, key: T, compara
  * @returns the least x for which p(x) is true or array.length if no element fullfills the given function.
  */
 export declare function findFirstInSorted<T>(array: ReadonlyArray<T>, p: (x: T) => boolean): number;
-declare type Compare<T> = (a: T, b: T) => number;
+type Compare<T> = (a: T, b: T) => number;
 export declare function quickSelect<T>(nth: number, data: T[], compare: Compare<T>): T;
 export declare function groupBy<T>(data: ReadonlyArray<T>, compare: (a: T, b: T) => number): T[][];
 /**

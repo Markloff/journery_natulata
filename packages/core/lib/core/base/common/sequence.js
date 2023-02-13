@@ -19,12 +19,12 @@ class Sequence {
 }
 exports.Sequence = Sequence;
 class SimpleSequence {
+    get elements() { return this._elements; }
     constructor(elements, onDidAdd, onDidRemove) {
         this._elements = [...elements];
         this.onDidSplice = event_1.Event.any(event_1.Event.map(onDidAdd, e => ({ start: this.elements.length, deleteCount: 0, toInsert: [e] })), event_1.Event.map(event_1.Event.filter(event_1.Event.map(onDidRemove, e => this.elements.indexOf(e)), i => i > -1), i => ({ start: i, deleteCount: 1, toInsert: [] })));
         this.disposable = this.onDidSplice(({ start, deleteCount, toInsert }) => this._elements.splice(start, deleteCount, ...toInsert));
     }
-    get elements() { return this._elements; }
     dispose() {
         this.disposable.dispose();
     }

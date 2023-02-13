@@ -2,7 +2,7 @@
 	"name": "natula-cli",
 	"version": "1.0.0",
 	"bin": {
-		"natula": "./bin/index.js"
+		"afw": "./bin/index.js"
 	},
 	"scripts": {
 		"dev": "tsc -w",
@@ -10,7 +10,12 @@
 	},
 	"dependencies": {
 		"chalk": "^5.0.1",
-		"commander": "^9.0.0",
+		"commander": "^10.0.0",
 		"natula-core": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "16.11.7",
+		"ts-node": "^10.0.0",
+		"typescript": "^4.9.5"
 	}
 }

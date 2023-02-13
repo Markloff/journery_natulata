@@ -1,1 +1,2 @@
-export declare const build: (entry: string) => void;
+declare const application: import("./service").Service;
+export { application, };

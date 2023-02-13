@@ -218,20 +218,20 @@ var TraceType;
     TraceType[TraceType["Branch"] = 2] = "Branch";
 })(TraceType || (TraceType = {}));
 class Trace {
+    static traceInvocation(ctor) {
+        return !_enableTracing ? Trace._None : new Trace(1 /* TraceType.Invocation */, ctor.name || ctor.toString().substring(0, 42).replace(/\n/g, ''));
+    }
+    static traceCreation(ctor) {
+        return !_enableTracing ? Trace._None : new Trace(0 /* TraceType.Creation */, ctor.name);
+    }
     constructor(type, name) {
         this.type = type;
         this.name = name;
         this._start = Date.now();
         this._dep = [];
     }
-    static traceInvocation(ctor) {
-        return !_enableTracing ? Trace._None : new Trace(1 /* Invocation */, ctor.name || ctor.toString().substring(0, 42).replace(/\n/g, ''));
-    }
-    static traceCreation(ctor) {
-        return !_enableTracing ? Trace._None : new Trace(0 /* Creation */, ctor.name);
-    }
     branch(id, first) {
-        let child = new Trace(2 /* Branch */, id.toString());
+        let child = new Trace(2 /* TraceType.Branch */, id.toString());
         this._dep.push([id, first, child]);
         return child;
     }
@@ -258,7 +258,7 @@ class Trace {
             return res.join('\n');
         }
         let lines = [
-            `${this.type === 0 /* Creation */ ? 'CREATE' : 'CALL'} ${this.name}`,
+            `${this.type === 0 /* TraceType.Creation */ ? 'CREATE' : 'CALL'} ${this.name}`,
             `${printChild(1, this)}`,
             `DONE, took ${dur.toFixed(2)}ms (grand total ${Trace._totals.toFixed(2)}ms)`
         ];

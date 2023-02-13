@@ -3,16 +3,16 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _a, _b, _ReadonlyMapView_source;
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -90,7 +90,7 @@ class ConfigKeysIterator {
         let justSeps = true;
         for (; this._to < this._value.length; this._to++) {
             const ch = this._value.charCodeAt(this._to);
-            if (ch === 46 /* Period */) {
+            if (ch === 46 /* CharCode.Period */) {
                 if (justSeps) {
                     this._from++;
                 }
@@ -134,7 +134,7 @@ class PathIterator {
         let justSeps = true;
         for (; this._to < this._value.length; this._to++) {
             const ch = this._value.charCodeAt(this._to);
-            if (ch === 47 /* Slash */ || this._splitOnBackslash && ch === 92 /* Backslash */) {
+            if (ch === 47 /* CharCode.Slash */ || this._splitOnBackslash && ch === 92 /* CharCode.Backslash */) {
                 if (justSeps) {
                     this._from++;
                 }
@@ -176,29 +176,29 @@ class UriIterator {
         this._value = key;
         this._states = [];
         if (this._value.scheme) {
-            this._states.push(1 /* Scheme */);
+            this._states.push(1 /* UriIteratorState.Scheme */);
         }
         if (this._value.authority) {
-            this._states.push(2 /* Authority */);
+            this._states.push(2 /* UriIteratorState.Authority */);
         }
         if (this._value.path) {
             this._pathIterator = new PathIterator(false, !this._ignorePathCasing(key));
             this._pathIterator.reset(key.path);
             if (this._pathIterator.value()) {
-                this._states.push(3 /* Path */);
+                this._states.push(3 /* UriIteratorState.Path */);
             }
         }
         if (this._value.query) {
-            this._states.push(4 /* Query */);
+            this._states.push(4 /* UriIteratorState.Query */);
         }
         if (this._value.fragment) {
-            this._states.push(5 /* Fragment */);
+            this._states.push(5 /* UriIteratorState.Fragment */);
         }
         this._stateIdx = 0;
         return this;
     }
     next() {
-        if (this._states[this._stateIdx] === 3 /* Path */ && this._pathIterator.hasNext()) {
+        if (this._states[this._stateIdx] === 3 /* UriIteratorState.Path */ && this._pathIterator.hasNext()) {
             this._pathIterator.next();
         }
         else {
@@ -207,41 +207,41 @@ class UriIterator {
         return this;
     }
     hasNext() {
-        return (this._states[this._stateIdx] === 3 /* Path */ && this._pathIterator.hasNext())
+        return (this._states[this._stateIdx] === 3 /* UriIteratorState.Path */ && this._pathIterator.hasNext())
             || this._stateIdx < this._states.length - 1;
     }
     cmp(a) {
-        if (this._states[this._stateIdx] === 1 /* Scheme */) {
+        if (this._states[this._stateIdx] === 1 /* UriIteratorState.Scheme */) {
             return (0, strings_1.compareIgnoreCase)(a, this._value.scheme);
         }
-        else if (this._states[this._stateIdx] === 2 /* Authority */) {
+        else if (this._states[this._stateIdx] === 2 /* UriIteratorState.Authority */) {
             return (0, strings_1.compareIgnoreCase)(a, this._value.authority);
         }
-        else if (this._states[this._stateIdx] === 3 /* Path */) {
+        else if (this._states[this._stateIdx] === 3 /* UriIteratorState.Path */) {
             return this._pathIterator.cmp(a);
         }
-        else if (this._states[this._stateIdx] === 4 /* Query */) {
+        else if (this._states[this._stateIdx] === 4 /* UriIteratorState.Query */) {
             return (0, strings_1.compare)(a, this._value.query);
         }
-        else if (this._states[this._stateIdx] === 5 /* Fragment */) {
+        else if (this._states[this._stateIdx] === 5 /* UriIteratorState.Fragment */) {
             return (0, strings_1.compare)(a, this._value.fragment);
         }
         throw new Error();
     }
     value() {
-        if (this._states[this._stateIdx] === 1 /* Scheme */) {
+        if (this._states[this._stateIdx] === 1 /* UriIteratorState.Scheme */) {
             return this._value.scheme;
         }
-        else if (this._states[this._stateIdx] === 2 /* Authority */) {
+        else if (this._states[this._stateIdx] === 2 /* UriIteratorState.Authority */) {
             return this._value.authority;
         }
-        else if (this._states[this._stateIdx] === 3 /* Path */) {
+        else if (this._states[this._stateIdx] === 3 /* UriIteratorState.Path */) {
             return this._pathIterator.value();
         }
-        else if (this._states[this._stateIdx] === 4 /* Query */) {
+        else if (this._states[this._stateIdx] === 4 /* UriIteratorState.Query */) {
             return this._value.query;
         }
-        else if (this._states[this._stateIdx] === 5 /* Fragment */) {
+        else if (this._states[this._stateIdx] === 5 /* UriIteratorState.Fragment */) {
             return this._value.fragment;
         }
         throw new Error();
@@ -254,9 +254,6 @@ class TernarySearchTreeNode {
     }
 }
 class TernarySearchTree {
-    constructor(segments) {
-        this._iter = segments;
-    }
     static forUris(ignorePathCasing = () => false) {
         return new TernarySearchTree(new UriIterator(ignorePathCasing));
     }
@@ -268,6 +265,9 @@ class TernarySearchTree {
     }
     static forConfigKeys() {
         return new TernarySearchTree(new ConfigKeysIterator());
+    }
+    constructor(segments) {
+        this._iter = segments;
     }
     clear() {
         this._root = undefined;
@@ -597,34 +597,34 @@ class LinkedMap {
     has(key) {
         return this._map.has(key);
     }
-    get(key, touch = 0 /* None */) {
+    get(key, touch = 0 /* Touch.None */) {
         const item = this._map.get(key);
         if (!item) {
             return undefined;
         }
-        if (touch !== 0 /* None */) {
+        if (touch !== 0 /* Touch.None */) {
             this.touch(item, touch);
         }
         return item.value;
     }
-    set(key, value, touch = 0 /* None */) {
+    set(key, value, touch = 0 /* Touch.None */) {
         let item = this._map.get(key);
         if (item) {
             item.value = value;
-            if (touch !== 0 /* None */) {
+            if (touch !== 0 /* Touch.None */) {
                 this.touch(item, touch);
             }
         }
         else {
             item = { key, value, next: undefined, previous: undefined };
             switch (touch) {
-                case 0 /* None */:
+                case 0 /* Touch.None */:
                     this.addItemLast(item);
                     break;
-                case 1 /* AsOld */:
+                case 1 /* Touch.AsOld */:
                     this.addItemFirst(item);
                     break;
-                case 2 /* AsNew */:
+                case 2 /* Touch.AsNew */:
                     this.addItemLast(item);
                     break;
                 default:
@@ -845,10 +845,10 @@ class LinkedMap {
         if (!this._head || !this._tail) {
             throw new Error('Invalid list');
         }
-        if ((touch !== 1 /* AsOld */ && touch !== 2 /* AsNew */)) {
+        if ((touch !== 1 /* Touch.AsOld */ && touch !== 2 /* Touch.AsNew */)) {
             return;
         }
-        if (touch === 1 /* AsOld */) {
+        if (touch === 1 /* Touch.AsOld */) {
             if (item === this._head) {
                 return;
             }
@@ -873,7 +873,7 @@ class LinkedMap {
             this._head = item;
             this._state++;
         }
-        else if (touch === 2 /* AsNew */) {
+        else if (touch === 2 /* Touch.AsNew */) {
             if (item === this._tail) {
                 return;
             }
@@ -933,14 +933,14 @@ class LRUCache extends LinkedMap {
         this._ratio = Math.min(Math.max(0, ratio), 1);
         this.checkTrim();
     }
-    get(key, touch = 2 /* AsNew */) {
+    get(key, touch = 2 /* Touch.AsNew */) {
         return super.get(key, touch);
     }
     peek(key) {
-        return super.get(key, 0 /* None */);
+        return super.get(key, 0 /* Touch.None */);
     }
     set(key, value) {
-        super.set(key, value, 2 /* AsNew */);
+        super.set(key, value, 2 /* Touch.AsNew */);
         this.checkTrim();
         return this;
     }
@@ -956,12 +956,12 @@ exports.LRUCache = LRUCache;
  * in the extension host to prevent the consumer from making any mutations.
  */
 class ReadonlyMapView {
+    get size() {
+        return __classPrivateFieldGet(this, _ReadonlyMapView_source, "f").size;
+    }
     constructor(source) {
         _ReadonlyMapView_source.set(this, void 0);
         __classPrivateFieldSet(this, _ReadonlyMapView_source, source, "f");
-    }
-    get size() {
-        return __classPrivateFieldGet(this, _ReadonlyMapView_source, "f").size;
     }
     forEach(callbackfn, thisArg) {
         __classPrivateFieldGet(this, _ReadonlyMapView_source, "f").forEach(callbackfn, thisArg);

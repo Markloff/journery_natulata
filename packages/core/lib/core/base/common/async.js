@@ -922,14 +922,6 @@ exports.IntervalCounter = IntervalCounter;
  * Creates a promise whose resolution or rejection can be controlled imperatively.
  */
 class DeferredPromise {
-    constructor() {
-        this.rejected = false;
-        this.resolved = false;
-        this.p = new Promise((c, e) => {
-            this.completeCallback = c;
-            this.errorCallback = e;
-        });
-    }
     get isRejected() {
         return this.rejected;
     }
@@ -938,6 +930,14 @@ class DeferredPromise {
     }
     get isSettled() {
         return this.rejected || this.resolved;
+    }
+    constructor() {
+        this.rejected = false;
+        this.resolved = false;
+        this.p = new Promise((c, e) => {
+            this.completeCallback = c;
+            this.errorCallback = e;
+        });
     }
     complete(value) {
         return new Promise(resolve => {

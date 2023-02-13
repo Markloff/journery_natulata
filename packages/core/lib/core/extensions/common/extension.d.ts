@@ -197,10 +197,10 @@ export interface IExtensionCapabilities {
     readonly untrustedWorkspaces?: ExtensionUntrustedWorkspaceSupport;
 }
 export declare const ALL_EXTENSION_KINDS: readonly ExtensionKind[];
-export declare type ExtensionKind = 'ui' | 'workspace' | 'web';
-export declare type LimitedWorkspaceSupportType = 'limited';
-export declare type ExtensionUntrustedWorkspaceSupportType = boolean | LimitedWorkspaceSupportType;
-export declare type ExtensionUntrustedWorkspaceSupport = {
+export type ExtensionKind = 'ui' | 'workspace' | 'web';
+export type LimitedWorkspaceSupportType = 'limited';
+export type ExtensionUntrustedWorkspaceSupportType = boolean | LimitedWorkspaceSupportType;
+export type ExtensionUntrustedWorkspaceSupport = {
     supported: true;
 } | {
     supported: false;
@@ -210,8 +210,8 @@ export declare type ExtensionUntrustedWorkspaceSupport = {
     description: string;
     restrictedConfigurations?: string[];
 };
-export declare type ExtensionVirtualWorkspaceSupportType = boolean | LimitedWorkspaceSupportType;
-export declare type ExtensionVirtualWorkspaceSupport = boolean | {
+export type ExtensionVirtualWorkspaceSupportType = boolean | LimitedWorkspaceSupportType;
+export type ExtensionVirtualWorkspaceSupport = boolean | {
     supported: true;
 } | {
     supported: false | LimitedWorkspaceSupportType;

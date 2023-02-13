@@ -319,7 +319,7 @@ export declare class IntervalCounter {
     constructor(interval: number);
     increment(): number;
 }
-export declare type ValueCallback<T = unknown> = (value: T | Promise<T>) => void;
+export type ValueCallback<T = unknown> = (value: T | Promise<T>) => void;
 /**
  * Creates a promise whose resolution or rejection can be controlled imperatively.
  */

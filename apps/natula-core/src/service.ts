@@ -4,20 +4,47 @@ import {
 	ICommandService,
 	InstantiationService,
 	ServiceCollection,
-	getSingletonServiceDescriptors
+	getSingletonServiceDescriptors,
+	IInstantiationService,
+	ConsoleMainLogger,
+	ILogService,
+	LogService
 } from 'core';
-import { IDependencyAnalyzeService } from './service/dependencyAnalyze';
+import { resolve } from 'node:path';
 
-CommandsRegistry.registerCommand('build.single-entry', (accessor, args) => {
-	const [entry] = args;
-	console.log('args', entry);
-	const dependencyAnalyzeService = accessor.get(IDependencyAnalyzeService);
-	dependencyAnalyzeService.execute(entry);
-})
+import { InitializeOptions } from './base/workspace/workspace';
+import { WorkspaceEnvironment } from './service/environment/environment';
+// import { runHygen } from 'template-generator';
+import { Workspace } from './workspace/workspace';
+import { TemplateService } from './service/template/templateService';
+import './service/file/fileService';
+import { FileService } from './service/file/fileService';
+
+CommandsRegistry.registerCommand('init', async (accessor, args: [InitializeOptions]) => {
+	const [config] = args;
+
+	const instantiationService = accessor.get(IInstantiationService);
+	const logService = accessor.get(ILogService);
+	const environmentService = new WorkspaceEnvironment({
+		...config,
+		rootPath: resolve(config.name),
+	});
+	const templateService = new TemplateService(environmentService);
+	const fileService = new FileService();
+
+	const workspace = new Workspace(instantiationService, environmentService, templateService, fileService);
+
+	try {
+		workspace.init();
+	} catch (err) {
+		logService.error(`AFW init error: ${err.message}`);
+	}
+	// await runHygen(['init', 'self']);
+});
 
 
 
-class Service {
+export class Service {
 
 	constructor(
 		private readonly _commandService: ICommandService
@@ -37,6 +64,8 @@ export const createService = () => {
 	for (const [identifier, descriptor] of singletonServices) {
 		serviceCollection.set(identifier, descriptor);
 	}
+	const logService = new LogService(new ConsoleMainLogger());
+	serviceCollection.set(ILogService, logService);
 	const instantiationService = new InstantiationService(serviceCollection);
 	const commandService = new CommandService(instantiationService);
 	return new Service(commandService);

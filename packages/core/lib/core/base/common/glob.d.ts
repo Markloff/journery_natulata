@@ -10,8 +10,8 @@ export interface SiblingClause {
     when: string;
 }
 export declare function splitGlobAware(pattern: string, splitChar: string): string[];
-export declare type ParsedPattern = (path: string, basename?: string) => boolean;
-export declare type ParsedExpression = (path: string, basename?: string, hasSibling?: (name: string) => boolean | Promise<boolean>) => string | null | Promise<string | null>;
+export type ParsedPattern = (path: string, basename?: string) => boolean;
+export type ParsedExpression = (path: string, basename?: string, hasSibling?: (name: string) => boolean | Promise<boolean>) => string | null | Promise<string | null>;
 export interface IGlobOptions {
     /**
      * Simplify patterns for use as exclusion filters during tree traversal to skip entire subtrees. Cannot be used outside of a tree traversal.

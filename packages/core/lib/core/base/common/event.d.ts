@@ -91,7 +91,7 @@ export declare namespace Event {
     function fromDOMEventEmitter<T>(emitter: DOMEventEmitter, eventName: string, map?: (...args: any[]) => T): Event<T>;
     function toPromise<T>(event: Event<T>): Promise<T>;
 }
-export declare type Listener<T> = [(e: T) => void, any] | ((e: T) => void);
+export type Listener<T> = [(e: T) => void, any] | ((e: T) => void);
 export interface EmitterOptions {
     onFirstListenerAdd?: Function;
     onFirstListenerDidAdd?: Function;

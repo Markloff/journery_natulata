@@ -30,7 +30,7 @@ export interface IReducedExtensionDescription {
     };
     main?: string;
 }
-declare type ProductDate = string | Date | undefined;
+type ProductDate = string | Date | undefined;
 export declare function isValidExtensionVersion(version: string, date: ProductDate, extensionDesc: IReducedExtensionDescription, notices: string[]): boolean;
 export declare function isEngineValid(engine: string, version: string, date: ProductDate): boolean;
 export {};

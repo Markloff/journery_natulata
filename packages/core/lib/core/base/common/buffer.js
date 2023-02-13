@@ -41,10 +41,6 @@ const hasTextDecoder = (typeof TextDecoder !== 'undefined');
 let textEncoder;
 let textDecoder;
 class QMBuffer {
-    constructor(buffer) {
-        this.buffer = buffer;
-        this.byteLength = this.buffer.length;
-    }
     static alloc(byteLength) {
         if (hasBuffer) {
             return new QMBuffer(Buffer.allocUnsafe(byteLength));
@@ -89,6 +85,10 @@ class QMBuffer {
             offset += element.byteLength;
         }
         return ret;
+    }
+    constructor(buffer) {
+        this.buffer = buffer;
+        this.byteLength = this.buffer.length;
     }
     toString() {
         if (hasBuffer) {

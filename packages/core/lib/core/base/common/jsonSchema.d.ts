@@ -1,4 +1,4 @@
-export declare type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'null' | 'array' | 'object';
+export type JSONSchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'null' | 'array' | 'object';
 export interface IJSONSchema {
     id?: string;
     $id?: string;

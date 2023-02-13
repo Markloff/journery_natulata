@@ -65,7 +65,7 @@ export declare function isFunction(obj: unknown): obj is Function;
  * @returns whether the provided parameters is are JavaScript Function or not.
  */
 export declare function areFunctions(...objects: unknown[]): boolean;
-export declare type TypeConstraint = string | Function;
+export type TypeConstraint = string | Function;
 export declare function validateConstraints(args: unknown[], constraints: Array<TypeConstraint | undefined>): void;
 export declare function validateConstraint(arg: unknown, constraint: TypeConstraint | undefined): void;
 export declare function getAllPropertyNames(obj: object): string[];
@@ -79,24 +79,24 @@ export declare function withNullAsUndefined<T>(x: T | null): T | undefined;
  * Converts undefined to null, passes all other values through.
  */
 export declare function withUndefinedAsNull<T>(x: T | undefined): T | null;
-declare type AddFirstParameterToFunction<T, TargetFunctionsReturnType, FirstParameter> = T extends (...args: any[]) => TargetFunctionsReturnType ? (firstArg: FirstParameter, ...args: Parameters<T>) => ReturnType<T> : T;
+type AddFirstParameterToFunction<T, TargetFunctionsReturnType, FirstParameter> = T extends (...args: any[]) => TargetFunctionsReturnType ? (firstArg: FirstParameter, ...args: Parameters<T>) => ReturnType<T> : T;
 /**
  * Allows to add a first parameter to functions of a type.
  */
-export declare type AddFirstParameterToFunctions<Target, TargetFunctionsReturnType, FirstParameter> = {
+export type AddFirstParameterToFunctions<Target, TargetFunctionsReturnType, FirstParameter> = {
     [K in keyof Target]: AddFirstParameterToFunction<Target[K], TargetFunctionsReturnType, FirstParameter>;
 };
 /**
  * Mapped-type that replaces all occurrences of URI with UriComponents
  */
-export declare type UriDto<T> = {
+export type UriDto<T> = {
     [K in keyof T]: T[K] extends URI ? UriComponents : UriDto<T[K]>;
 };
 /**
  * Mapped-type that replaces all occurrences of URI with UriComponents and
  * drops all functions.
  */
-export declare type Dto<T> = T extends {
+export type Dto<T> = T extends {
     toJSON(): infer U;
 } ? U : T extends object ? {
     [k in keyof T]: Dto<T[k]>;

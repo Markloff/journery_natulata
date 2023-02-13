@@ -1,5 +1,5 @@
 import { URI } from '../../../../core/base/common/uri';
-export declare type ValueCallback<T = any> = (value: T | Promise<T>) => void;
+export type ValueCallback<T = any> = (value: T | Promise<T>) => void;
 export declare function toResource(this: any, path: string): URI;
 export declare function suiteRepeat(n: number, description: string, callback: (this: any) => void): void;
 export declare function testRepeat(n: number, description: string, callback: (this: any) => any): void;

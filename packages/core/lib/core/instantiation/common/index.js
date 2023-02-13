@@ -19,3 +19,4 @@ __exportStar(require("./instantiationService"), exports);
 __exportStar(require("./serviceCollection"), exports);
 __exportStar(require("./instantiation"), exports);
 __exportStar(require("./extensions"), exports);
+__exportStar(require("./graph"), exports);

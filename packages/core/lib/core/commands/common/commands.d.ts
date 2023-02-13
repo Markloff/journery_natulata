@@ -32,7 +32,7 @@ export interface ICommandHandlerDescription {
     }>;
     readonly returns?: string;
 }
-export declare type ICommandsMap = Map<string, ICommand>;
+export type ICommandsMap = Map<string, ICommand>;
 export interface ICommandRegistry {
     onDidRegisterCommand: Event<string>;
     registerCommand(id: string, command: ICommandHandler): IDisposable;

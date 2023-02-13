@@ -2,17 +2,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
-const path_1 = require("path");
 const natula_core_1 = require("natula-core");
 const program = new commander_1.Command();
+program
+    .name('airwallex-fe-workspace')
+    .description('CLI to work on airwallex FE work')
+    .version('0.8.0');
 // 配置帮助信息
 program.on('--help', () => {
-    console.log("1233");
+    console.log("\nIf you got any issue, please contact Marklov Cai or Yifan Leng\n");
 });
 program
-    .command('build <source>')
-    .action((source) => {
-    const standardPath = (0, path_1.resolve)(source);
-    (0, natula_core_1.build)(standardPath);
+    .command('init')
+    .argument('<name>')
+    .option('--monorepo <monorepo>', 'monorepo type', null)
+    .option('--mfe', 'with micro front end client', true)
+    .option('--graphQL', 'with graphQL server', false)
+    .option('-b, --branch')
+    .action((name, options) => {
+    const { monorepo = null, graphQL = false, mfe = true } = options;
+    natula_core_1.application.executeCommand('init', {
+        name,
+        monorepo,
+        withGraphQLServer: graphQL,
+        withMicroFrontendClient: mfe
+    });
 });
-program.parse(process.argv);
+program
+    .command('new')
+    .argument('<type>')
+    .action((type) => {
+    console.log('new');
+});
+program.parse();

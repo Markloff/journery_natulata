@@ -7,13 +7,13 @@ const platform_1 = require("../../../core/base/common/platform");
  */
 const hasPerformanceNow = (platform_1.globals.performance && typeof platform_1.globals.performance.now === 'function');
 class StopWatch {
+    static create(highResolution = true) {
+        return new StopWatch(highResolution);
+    }
     constructor(highResolution) {
         this._highResolution = hasPerformanceNow && highResolution;
         this._startTime = this._now();
         this._stopTime = -1;
-    }
-    static create(highResolution = true) {
-        return new StopWatch(highResolution);
     }
     _now() {
         return this._highResolution ? platform_1.globals.performance.now() : Date.now();

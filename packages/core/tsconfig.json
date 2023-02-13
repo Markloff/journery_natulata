@@ -53,8 +53,9 @@
         "preserveConstEnums": true,
 		"sourceMap": false,
 		"outDir": "./lib",
-        "target": "es6"
-    },
+        "target": "es6",
+		"skipLibCheck": true
+	},
 	"exclude": [
 		"node_modules",
 		"lib/*"

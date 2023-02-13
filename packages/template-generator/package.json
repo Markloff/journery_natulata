@@ -1,0 +1,20 @@
+{
+    "name": "template-generator",
+    "version": "0.0.0",
+    "private": true,
+    "main": "dist/index.js",
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc --project tsconfig-build.json"
+	},
+	"dependencies": {
+		"hygen": "^6.2.11",
+		"enquirer": "^2.3.6",
+		"execa": "^5.0.0"
+	},
+	"devDependencies": {
+		"tsconfig": "workspace:*",
+		"typescript": "^4.9.5",
+		"@types/node": "^16.18.12"
+	}
+}

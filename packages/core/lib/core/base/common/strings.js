@@ -214,7 +214,7 @@ exports.splitLines = splitLines;
 function firstNonWhitespaceIndex(str) {
     for (let i = 0, len = str.length; i < len; i++) {
         const chCode = str.charCodeAt(i);
-        if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+        if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
             return i;
         }
     }
@@ -228,7 +228,7 @@ exports.firstNonWhitespaceIndex = firstNonWhitespaceIndex;
 function getLeadingWhitespace(str, start = 0, end = str.length) {
     for (let i = start; i < end; i++) {
         const chCode = str.charCodeAt(i);
-        if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+        if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
             return str.substring(start, i);
         }
     }
@@ -242,7 +242,7 @@ exports.getLeadingWhitespace = getLeadingWhitespace;
 function lastNonWhitespaceIndex(str, startIndex = str.length - 1) {
     for (let i = startIndex; i >= 0; i--) {
         const chCode = str.charCodeAt(i);
-        if (chCode !== 32 /* Space */ && chCode !== 9 /* Tab */) {
+        if (chCode !== 32 /* CharCode.Space */ && chCode !== 9 /* CharCode.Tab */) {
             return i;
         }
     }
@@ -322,11 +322,11 @@ function compareSubstringIgnoreCase(a, b, aStart = 0, aEnd = a.length, bStart = 
 }
 exports.compareSubstringIgnoreCase = compareSubstringIgnoreCase;
 function isLowerAsciiLetter(code) {
-    return code >= 97 /* a */ && code <= 122 /* z */;
+    return code >= 97 /* CharCode.a */ && code <= 122 /* CharCode.z */;
 }
 exports.isLowerAsciiLetter = isLowerAsciiLetter;
 function isUpperAsciiLetter(code) {
-    return code >= 65 /* A */ && code <= 90 /* Z */;
+    return code >= 65 /* CharCode.A */ && code <= 90 /* CharCode.Z */;
 }
 exports.isUpperAsciiLetter = isUpperAsciiLetter;
 function isAsciiLetter(code) {
@@ -448,7 +448,7 @@ function nextCharLength(str, offset) {
     const initialOffset = offset;
     const len = str.length;
     const initialCodePoint = getNextCodePoint(str, len, offset);
-    offset += (initialCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+    offset += (initialCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
     let graphemeBreakType = graphemeBreakTree.getGraphemeBreakType(initialCodePoint);
     while (offset < len) {
         const nextCodePoint = getNextCodePoint(str, len, offset);
@@ -456,7 +456,7 @@ function nextCharLength(str, offset) {
         if (breakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
             break;
         }
-        offset += (nextCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        offset += (nextCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         graphemeBreakType = nextGraphemeBreakType;
     }
     return (offset - initialOffset);
@@ -466,7 +466,7 @@ function prevCharLength(str, offset) {
     const graphemeBreakTree = GraphemeBreakTree.getInstance();
     const initialOffset = offset;
     const initialCodePoint = getPrevCodePoint(str, offset);
-    offset -= (initialCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+    offset -= (initialCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
     let graphemeBreakType = graphemeBreakTree.getGraphemeBreakType(initialCodePoint);
     while (offset > 0) {
         const prevCodePoint = getPrevCodePoint(str, offset);
@@ -474,7 +474,7 @@ function prevCharLength(str, offset) {
         if (breakBetweenGraphemeBreakType(prevGraphemeBreakType, graphemeBreakType)) {
             break;
         }
-        offset -= (prevCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        offset -= (prevCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         graphemeBreakType = prevGraphemeBreakType;
     }
     return (initialOffset - offset);
@@ -486,7 +486,7 @@ function _getCharContainingOffset(str, offset) {
     const initialOffset = offset;
     const initialCodePoint = getNextCodePoint(str, len, offset);
     const initialGraphemeBreakType = graphemeBreakTree.getGraphemeBreakType(initialCodePoint);
-    offset += (initialCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+    offset += (initialCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
     // extend to the right
     let graphemeBreakType = initialGraphemeBreakType;
     while (offset < len) {
@@ -495,7 +495,7 @@ function _getCharContainingOffset(str, offset) {
         if (breakBetweenGraphemeBreakType(graphemeBreakType, nextGraphemeBreakType)) {
             break;
         }
-        offset += (nextCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        offset += (nextCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         graphemeBreakType = nextGraphemeBreakType;
     }
     const endOffset = offset;
@@ -508,7 +508,7 @@ function _getCharContainingOffset(str, offset) {
         if (breakBetweenGraphemeBreakType(prevGraphemeBreakType, graphemeBreakType)) {
             break;
         }
-        offset -= (prevCodePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        offset -= (prevCodePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         graphemeBreakType = prevGraphemeBreakType;
     }
     return [offset, endOffset];
@@ -532,7 +532,7 @@ function encodeUTF8(str) {
     let strOffset = 0;
     while (strOffset < strLen) {
         const codePoint = getNextCodePoint(str, strLen, strOffset);
-        strOffset += (codePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        strOffset += (codePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         if (codePoint < 0x0080) {
             neededSize += 1;
         }
@@ -552,7 +552,7 @@ function encodeUTF8(str) {
     let arrOffset = 0;
     while (strOffset < strLen) {
         const codePoint = getNextCodePoint(str, strLen, strOffset);
-        strOffset += (codePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
+        strOffset += (codePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1);
         if (codePoint < 0x0080) {
             arr[arrOffset++] = codePoint;
         }
@@ -765,9 +765,9 @@ function removeAnsiEscapeCodes(str) {
 }
 exports.removeAnsiEscapeCodes = removeAnsiEscapeCodes;
 // -- UTF-8 BOM
-exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* UTF8_BOM */);
+exports.UTF8_BOM_CHARACTER = String.fromCharCode(65279 /* CharCode.UTF8_BOM */);
 function startsWithUTF8BOM(str) {
-    return !!(str && str.length > 0 && str.charCodeAt(0) === 65279 /* UTF8_BOM */);
+    return !!(str && str.length > 0 && str.charCodeAt(0) === 65279 /* CharCode.UTF8_BOM */);
 }
 exports.startsWithUTF8BOM = startsWithUTF8BOM;
 function stripUTF8BOM(str) {
@@ -836,12 +836,12 @@ exports.getNLines = getNLines;
  * Produces 'a'-'z', followed by 'A'-'Z'... followed by 'a'-'z', etc.
  */
 function singleLetterHash(n) {
-    const LETTERS_CNT = (90 /* Z */ - 65 /* A */ + 1);
+    const LETTERS_CNT = (90 /* CharCode.Z */ - 65 /* CharCode.A */ + 1);
     n = n % (2 * LETTERS_CNT);
     if (n < LETTERS_CNT) {
-        return String.fromCharCode(97 /* a */ + n);
+        return String.fromCharCode(97 /* CharCode.a */ + n);
     }
-    return String.fromCharCode(65 /* A */ + n - LETTERS_CNT);
+    return String.fromCharCode(65 /* CharCode.A */ + n - LETTERS_CNT);
 }
 exports.singleLetterHash = singleLetterHash;
 //#region Unicode Grapheme Break
@@ -853,68 +853,68 @@ exports.getGraphemeBreakType = getGraphemeBreakType;
 function breakBetweenGraphemeBreakType(breakTypeA, breakTypeB) {
     // http://www.unicode.org/reports/tr29/#Grapheme_Cluster_Boundary_Rules
     // !!! Let's make the common case a bit faster
-    if (breakTypeA === 0 /* Other */) {
+    if (breakTypeA === 0 /* GraphemeBreakType.Other */) {
         // see https://www.unicode.org/Public/13.0.0/ucd/auxiliary/GraphemeBreakTest-13.0.0d10.html#table
-        return (breakTypeB !== 5 /* Extend */ && breakTypeB !== 7 /* SpacingMark */);
+        return (breakTypeB !== 5 /* GraphemeBreakType.Extend */ && breakTypeB !== 7 /* GraphemeBreakType.SpacingMark */);
     }
     // Do not break between a CR and LF. Otherwise, break before and after controls.
     // GB3                                        CR × LF
     // GB4                       (Control | CR | LF) ÷
     // GB5                                           ÷ (Control | CR | LF)
-    if (breakTypeA === 2 /* CR */) {
-        if (breakTypeB === 3 /* LF */) {
+    if (breakTypeA === 2 /* GraphemeBreakType.CR */) {
+        if (breakTypeB === 3 /* GraphemeBreakType.LF */) {
             return false; // GB3
         }
     }
-    if (breakTypeA === 4 /* Control */ || breakTypeA === 2 /* CR */ || breakTypeA === 3 /* LF */) {
+    if (breakTypeA === 4 /* GraphemeBreakType.Control */ || breakTypeA === 2 /* GraphemeBreakType.CR */ || breakTypeA === 3 /* GraphemeBreakType.LF */) {
         return true; // GB4
     }
-    if (breakTypeB === 4 /* Control */ || breakTypeB === 2 /* CR */ || breakTypeB === 3 /* LF */) {
+    if (breakTypeB === 4 /* GraphemeBreakType.Control */ || breakTypeB === 2 /* GraphemeBreakType.CR */ || breakTypeB === 3 /* GraphemeBreakType.LF */) {
         return true; // GB5
     }
     // Do not break Hangul syllable sequences.
     // GB6                                         L × (L | V | LV | LVT)
     // GB7                                  (LV | V) × (V | T)
     // GB8                                 (LVT | T) × T
-    if (breakTypeA === 8 /* L */) {
-        if (breakTypeB === 8 /* L */ || breakTypeB === 9 /* V */ || breakTypeB === 11 /* LV */ || breakTypeB === 12 /* LVT */) {
+    if (breakTypeA === 8 /* GraphemeBreakType.L */) {
+        if (breakTypeB === 8 /* GraphemeBreakType.L */ || breakTypeB === 9 /* GraphemeBreakType.V */ || breakTypeB === 11 /* GraphemeBreakType.LV */ || breakTypeB === 12 /* GraphemeBreakType.LVT */) {
             return false; // GB6
         }
     }
-    if (breakTypeA === 11 /* LV */ || breakTypeA === 9 /* V */) {
-        if (breakTypeB === 9 /* V */ || breakTypeB === 10 /* T */) {
+    if (breakTypeA === 11 /* GraphemeBreakType.LV */ || breakTypeA === 9 /* GraphemeBreakType.V */) {
+        if (breakTypeB === 9 /* GraphemeBreakType.V */ || breakTypeB === 10 /* GraphemeBreakType.T */) {
             return false; // GB7
         }
     }
-    if (breakTypeA === 12 /* LVT */ || breakTypeA === 10 /* T */) {
-        if (breakTypeB === 10 /* T */) {
+    if (breakTypeA === 12 /* GraphemeBreakType.LVT */ || breakTypeA === 10 /* GraphemeBreakType.T */) {
+        if (breakTypeB === 10 /* GraphemeBreakType.T */) {
             return false; // GB8
         }
     }
     // Do not break before extending characters or ZWJ.
     // GB9                                           × (Extend | ZWJ)
-    if (breakTypeB === 5 /* Extend */ || breakTypeB === 13 /* ZWJ */) {
+    if (breakTypeB === 5 /* GraphemeBreakType.Extend */ || breakTypeB === 13 /* GraphemeBreakType.ZWJ */) {
         return false; // GB9
     }
     // The GB9a and GB9b rules only apply to extended grapheme clusters:
     // Do not break before SpacingMarks, or after Prepend characters.
     // GB9a                                          × SpacingMark
     // GB9b                                  Prepend ×
-    if (breakTypeB === 7 /* SpacingMark */) {
+    if (breakTypeB === 7 /* GraphemeBreakType.SpacingMark */) {
         return false; // GB9a
     }
-    if (breakTypeA === 1 /* Prepend */) {
+    if (breakTypeA === 1 /* GraphemeBreakType.Prepend */) {
         return false; // GB9b
     }
     // Do not break within emoji modifier sequences or emoji zwj sequences.
     // GB11    \p{Extended_Pictographic} Extend* ZWJ × \p{Extended_Pictographic}
-    if (breakTypeA === 13 /* ZWJ */ && breakTypeB === 14 /* Extended_Pictographic */) {
+    if (breakTypeA === 13 /* GraphemeBreakType.ZWJ */ && breakTypeB === 14 /* GraphemeBreakType.Extended_Pictographic */) {
         // Note: we are not implementing the rule entirely here to avoid introducing states
         return false; // GB11
     }
     // GB12                          sot (RI RI)* RI × RI
     // GB13                        [^RI] (RI RI)* RI × RI
-    if (breakTypeA === 6 /* Regional_Indicator */ && breakTypeB === 6 /* Regional_Indicator */) {
+    if (breakTypeA === 6 /* GraphemeBreakType.Regional_Indicator */ && breakTypeB === 6 /* GraphemeBreakType.Regional_Indicator */) {
         // Note: we are not implementing the rule entirely here to avoid introducing states
         return false; // GB12 & GB13
     }
@@ -941,29 +941,29 @@ var GraphemeBreakType;
     GraphemeBreakType[GraphemeBreakType["Extended_Pictographic"] = 14] = "Extended_Pictographic";
 })(GraphemeBreakType = exports.GraphemeBreakType || (exports.GraphemeBreakType = {}));
 class GraphemeBreakTree {
-    constructor() {
-        this._data = getGraphemeBreakRawData();
-    }
     static getInstance() {
         if (!GraphemeBreakTree._INSTANCE) {
             GraphemeBreakTree._INSTANCE = new GraphemeBreakTree();
         }
         return GraphemeBreakTree._INSTANCE;
     }
+    constructor() {
+        this._data = getGraphemeBreakRawData();
+    }
     getGraphemeBreakType(codePoint) {
         // !!! Let's make 7bit ASCII a bit faster: 0..31
         if (codePoint < 32) {
-            if (codePoint === 10 /* LineFeed */) {
-                return 3 /* LF */;
+            if (codePoint === 10 /* CharCode.LineFeed */) {
+                return 3 /* GraphemeBreakType.LF */;
             }
-            if (codePoint === 13 /* CarriageReturn */) {
-                return 2 /* CR */;
+            if (codePoint === 13 /* CharCode.CarriageReturn */) {
+                return 2 /* GraphemeBreakType.CR */;
             }
-            return 4 /* Control */;
+            return 4 /* GraphemeBreakType.Control */;
         }
         // !!! Let's make 7bit ASCII a bit faster: 32..126
         if (codePoint < 127) {
-            return 0 /* Other */;
+            return 0 /* GraphemeBreakType.Other */;
         }
         const data = this._data;
         const nodeCount = data.length / 3;
@@ -982,7 +982,7 @@ class GraphemeBreakTree {
                 return data[3 * nodeIndex + 2];
             }
         }
-        return 0 /* Other */;
+        return 0 /* GraphemeBreakType.Other */;
     }
 }
 GraphemeBreakTree._INSTANCE = null;
@@ -1016,7 +1016,7 @@ function getOffsetBeforeLastEmojiComponent(offset, str) {
     let codePoint = getPrevCodePoint(str, offset);
     offset -= getUTF16Length(codePoint);
     // Skip modifiers
-    while ((isEmojiModifier(codePoint) || codePoint === 65039 /* emojiVariantSelector */ || codePoint === 8419 /* enclosingKeyCap */)) {
+    while ((isEmojiModifier(codePoint) || codePoint === 65039 /* CodePoint.emojiVariantSelector */ || codePoint === 8419 /* CodePoint.enclosingKeyCap */)) {
         if (offset === 0) {
             // Cannot skip modifier, no preceding emoji base.
             return undefined;
@@ -1034,14 +1034,14 @@ function getOffsetBeforeLastEmojiComponent(offset, str) {
         // In theory, we should check if that ZWJ actually combines multiple emojis
         // to prevent deleting ZWJs in situations we didn't account for.
         const optionalZwjCodePoint = getPrevCodePoint(str, offset);
-        if (optionalZwjCodePoint === 8205 /* zwj */) {
+        if (optionalZwjCodePoint === 8205 /* CodePoint.zwj */) {
             offset -= getUTF16Length(optionalZwjCodePoint);
         }
     }
     return offset;
 }
 function getUTF16Length(codePoint) {
-    return codePoint >= 65536 /* UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1;
+    return codePoint >= 65536 /* Constants.UNICODE_SUPPLEMENTARY_PLANE_BEGIN */ ? 2 : 1;
 }
 function isEmojiModifier(codePoint) {
     return 0x1F3FB <= codePoint && codePoint <= 0x1F3FF;

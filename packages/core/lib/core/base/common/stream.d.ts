@@ -1,7 +1,7 @@
 /**
  * The payload that flows in readable stream events.
  */
-export declare type ReadableStreamEventPayload<T> = T | Error | 'end';
+export type ReadableStreamEventPayload<T> = T | Error | 'end';
 export interface ReadableStreamEvents<T> {
     /**
      * The 'data' event is emitted whenever the stream is

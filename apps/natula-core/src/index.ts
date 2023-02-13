@@ -1,9 +1,8 @@
 import { createService } from './service';
 
 
-const service = createService();
+const application = createService();
 
-export const build = (entry: string) => {
-	service.executeCommand('build.single-entry', entry);
+export {
+	application,
 }
-

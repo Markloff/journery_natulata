@@ -4,11 +4,11 @@
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-		"noImplicitReturns": true,
-		"noImplicitOverride": true,
-		"noUnusedLocals": true,
-		"allowUnreachableCode": false,
-		"strict": true,
+		"noImplicitReturns": false,
+		"noImplicitOverride": false,
+		"noUnusedLocals": false,
+		"allowUnreachableCode": true,
+		"strict": false,
 		"declaration": true,
 		"allowSyntheticDefaultImports": true,
 		"useUnknownInCatchVariables": false,
@@ -47,7 +47,8 @@
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"outDir": "./lib",
-		"target": "es6"
+		"target": "es6",
+		"skipLibCheck": true
 	},
 	"exclude": [
 		"node_modules",

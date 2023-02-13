@@ -28,7 +28,7 @@ export declare function refineServiceDecorator<T1, T extends T1>(serviceIdentifi
  * Mark a service dependency as optional.
  */
 export declare function optional<T>(serviceIdentifier: ServiceIdentifier<T>): (target: Function, key: string, index: number) => void;
-export declare type BrandedService = {
+export type BrandedService = {
     _serviceBrand: undefined;
 };
 export interface IConstructorSignature0<T> {
@@ -66,7 +66,7 @@ export interface ServicesAccessor {
  * Given a list of arguments as a tuple, attempt to extract the leading, non-service arguments
  * to their own tuple.
  */
-declare type GetLeadingNonServiceArgs<Args> = Args extends [...BrandedService[]] ? [] : Args extends [infer A1, ...BrandedService[]] ? [A1] : Args extends [infer A1, infer A2, ...BrandedService[]] ? [A1, A2] : Args extends [infer A1, infer A2, infer A3, ...BrandedService[]] ? [A1, A2, A3] : Args extends [infer A1, infer A2, infer A3, infer A4, ...BrandedService[]] ? [A1, A2, A3, A4] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, ...BrandedService[]] ? [A1, A2, A3, A4, A5] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, infer A8, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7, A8] : never;
+type GetLeadingNonServiceArgs<Args> = Args extends [...BrandedService[]] ? [] : Args extends [infer A1, ...BrandedService[]] ? [A1] : Args extends [infer A1, infer A2, ...BrandedService[]] ? [A1, A2] : Args extends [infer A1, infer A2, infer A3, ...BrandedService[]] ? [A1, A2, A3] : Args extends [infer A1, infer A2, infer A3, infer A4, ...BrandedService[]] ? [A1, A2, A3, A4] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, ...BrandedService[]] ? [A1, A2, A3, A4, A5] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7] : Args extends [infer A1, infer A2, infer A3, infer A4, infer A5, infer A6, infer A7, infer A8, ...BrandedService[]] ? [A1, A2, A3, A4, A5, A6, A7, A8] : never;
 export declare const IInstantiationService: ServiceIdentifier<IInstantiationService>;
 export interface IInstantiationService {
     readonly _serviceBrand: undefined;

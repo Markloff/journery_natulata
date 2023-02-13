@@ -401,7 +401,7 @@ const mocha_1 = require("mocha");
         assertEncodeDecodeUTF8('🧝', [240, 159, 167, 157]);
     });
     (0, mocha_1.test)('getGraphemeBreakType', () => {
-        assert_1.default.strictEqual(strings.getGraphemeBreakType(0xBC1), 7 /* SpacingMark */);
+        assert_1.default.strictEqual(strings.getGraphemeBreakType(0xBC1), 7 /* strings.GraphemeBreakType.SpacingMark */);
     });
     (0, mocha_1.test)('truncate', () => {
         assert_1.default.strictEqual('hello world', strings.truncate('hello world', 100));

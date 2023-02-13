@@ -10,7 +10,7 @@ const strings_1 = require("../../../core/base/common/strings");
 const path_1 = require("../../../core/base/common/path");
 const type_1 = require("../../../core/base/common/type");
 function isPathSeparator(code) {
-    return code === 47 /* Slash */ || code === 92 /* Backslash */;
+    return code === 47 /* CharCode.Slash */ || code === 92 /* CharCode.Backslash */;
 }
 exports.isPathSeparator = isPathSeparator;
 /**
@@ -79,7 +79,7 @@ function getRoot(path, sep = path_1.posix.sep) {
     }
     else if (isWindowsDriveLetter(firstLetter)) {
         // check for windows drive letter c:\ or c:
-        if (path.charCodeAt(1) === 58 /* Colon */) {
+        if (path.charCodeAt(1) === 58 /* CharCode.Colon */) {
             if (isPathSeparator(path.charCodeAt(2))) {
                 // C:\fff
                 // ^^^
@@ -124,18 +124,18 @@ function isUNC(path) {
         return false;
     }
     let code = path.charCodeAt(0);
-    if (code !== 92 /* Backslash */) {
+    if (code !== 92 /* CharCode.Backslash */) {
         return false;
     }
     code = path.charCodeAt(1);
-    if (code !== 92 /* Backslash */) {
+    if (code !== 92 /* CharCode.Backslash */) {
         return false;
     }
     let pos = 2;
     const start = pos;
     for (; pos < path.length; pos++) {
         code = path.charCodeAt(pos);
-        if (code === 92 /* Backslash */) {
+        if (code === 92 /* CharCode.Backslash */) {
             break;
         }
     }
@@ -143,7 +143,7 @@ function isUNC(path) {
         return false;
     }
     code = path.charCodeAt(pos + 1);
-    if (isNaN(code) || code === 92 /* Backslash */) {
+    if (isNaN(code) || code === 92 /* CharCode.Backslash */) {
         return false;
     }
     return true;
@@ -222,7 +222,7 @@ function isEqualOrParent(base, parentCandidate, ignoreCase, separator = path_1.s
 }
 exports.isEqualOrParent = isEqualOrParent;
 function isWindowsDriveLetter(char0) {
-    return char0 >= 65 /* A */ && char0 <= 90 /* Z */ || char0 >= 97 /* a */ && char0 <= 122 /* z */;
+    return char0 >= 65 /* CharCode.A */ && char0 <= 90 /* CharCode.Z */ || char0 >= 97 /* CharCode.a */ && char0 <= 122 /* CharCode.z */;
 }
 exports.isWindowsDriveLetter = isWindowsDriveLetter;
 function sanitizeFilePath(candidate, cwd) {
@@ -261,14 +261,14 @@ function isRootOrDriveLetter(path) {
             return false;
         }
         return hasDriveLetter(pathNormalized) &&
-            (path.length === 2 || pathNormalized.charCodeAt(2) === 92 /* Backslash */);
+            (path.length === 2 || pathNormalized.charCodeAt(2) === 92 /* CharCode.Backslash */);
     }
     return pathNormalized === path_1.posix.sep;
 }
 exports.isRootOrDriveLetter = isRootOrDriveLetter;
 function hasDriveLetter(path) {
     if (platform_1.isWindows) {
-        return isWindowsDriveLetter(path.charCodeAt(0)) && path.charCodeAt(1) === 58 /* Colon */;
+        return isWindowsDriveLetter(path.charCodeAt(0)) && path.charCodeAt(1) === 58 /* CharCode.Colon */;
     }
     return false;
 }

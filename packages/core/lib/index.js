@@ -18,3 +18,4 @@ __exportStar(require("./core/base/browser"), exports);
 __exportStar(require("./core/base/common"), exports);
 __exportStar(require("./core/commands/common"), exports);
 __exportStar(require("./core/instantiation/common"), exports);
+__exportStar(require("./core/log/common/log"), exports);

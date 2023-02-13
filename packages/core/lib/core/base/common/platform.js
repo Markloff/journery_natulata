@@ -84,22 +84,22 @@ var Platform;
 })(Platform = exports.Platform || (exports.Platform = {}));
 function PlatformToString(platform) {
     switch (platform) {
-        case 0 /* Web */: return 'Web';
-        case 1 /* Mac */: return 'Mac';
-        case 2 /* Linux */: return 'Linux';
-        case 3 /* Windows */: return 'Windows';
+        case 0 /* Platform.Web */: return 'Web';
+        case 1 /* Platform.Mac */: return 'Mac';
+        case 2 /* Platform.Linux */: return 'Linux';
+        case 3 /* Platform.Windows */: return 'Windows';
     }
 }
 exports.PlatformToString = PlatformToString;
-let _platform = 0 /* Web */;
+let _platform = 0 /* Platform.Web */;
 if (_isMacintosh) {
-    _platform = 1 /* Mac */;
+    _platform = 1 /* Platform.Mac */;
 }
 else if (_isWindows) {
-    _platform = 3 /* Windows */;
+    _platform = 3 /* Platform.Windows */;
 }
 else if (_isLinux) {
-    _platform = 2 /* Linux */;
+    _platform = 2 /* Platform.Linux */;
 }
 exports.isWindows = _isWindows;
 exports.isMacintosh = _isMacintosh;

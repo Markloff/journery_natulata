@@ -558,7 +558,7 @@ function aggregateBasenameMatches(parsedPatterns, result) {
             let i;
             for (i = path.length; i > 0; i--) {
                 const ch = path.charCodeAt(i - 1);
-                if (ch === 47 /* Slash */ || ch === 92 /* Backslash */) {
+                if (ch === 47 /* CharCode.Slash */ || ch === 92 /* CharCode.Backslash */) {
                     break;
                 }
             }
