@@ -26,7 +26,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.strings = exports.resources = exports.process = exports.glob = void 0;
+exports.debounce = exports.throttle = exports.memoize = exports.strings = exports.resources = exports.process = exports.glob = void 0;
 __exportStar(require("./arrays"), exports);
 __exportStar(require("./async"), exports);
 __exportStar(require("./buffer"), exports);
@@ -59,3 +59,7 @@ __exportStar(require("./type"), exports);
 __exportStar(require("./uint"), exports);
 __exportStar(require("./uri"), exports);
 __exportStar(require("./uuid"), exports);
+var decorators_1 = require("./decorators");
+Object.defineProperty(exports, "memoize", { enumerable: true, get: function () { return decorators_1.memoize; } });
+Object.defineProperty(exports, "throttle", { enumerable: true, get: function () { return decorators_1.throttle; } });
+Object.defineProperty(exports, "debounce", { enumerable: true, get: function () { return decorators_1.debounce; } });

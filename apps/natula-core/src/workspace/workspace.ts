@@ -1,12 +1,10 @@
-import { InitializeOptions, IWorkspace } from '../base/workspace/workspace';
+import { IWorkspace } from '../base/workspace/workspace';
 import { Emitter, IDisposable, IInstantiationService, toDisposable } from 'core';
-import { Project } from '../base/workspace/project';
 import { IWorkspaceEnvironmentService } from '../service/environment/environment';
 import { ITemplateService } from '../service/template/templateService';
 import { NoRelationshipContainer } from './container';
-import * as glob from 'fast-glob';
 import { IFileService } from '../service/file/fileService';
-import { ProjectType } from '../base/project/project';
+import { getDefaultProject, Project, ProjectType } from '../base/project/project';
 
 export class Workspace implements IWorkspace {
 
@@ -24,17 +22,21 @@ export class Workspace implements IWorkspace {
 
 	}
 
-	init() {
-		const { monorepo, withGraphQLServer, withMicroFrontendClient, rootPath, name} = this.environmentService;
-
-		this.fileService.createDictionary(rootPath);
-
+	// TODO need refactor
+	async init() {
+		const { monorepo, withGraphQLServer, withMicroFrontendClient, rootPath } = this.environmentService;
+		// this.fileService.createDictionary(rootPath);
+		await this.templateService.generateMetaTemplate();
 		if (monorepo === null) {
 			const container = new NoRelationshipContainer(rootPath);
-			// container.addProject()
+			if (withMicroFrontendClient) {
+				container.addProject(getDefaultProject(ProjectType.MicroFrontendClient));
+			}
+			if (withGraphQLServer) {
+				container.addProject(getDefaultProject(ProjectType.GraphQLServer))
+			}
+			this._dispatchChange(container.projects);
 		}
-
-
 		// if (monorepo === null) {
 		// 	this.container = new NoRelationshipContainer();
 		// } else {
@@ -46,8 +48,10 @@ export class Workspace implements IWorkspace {
 		// this._dispatchChange();
 	}
 
-	private _dispatchChange() {
-		// this._onProjectChange.fire(this.projects);
+	private _dispatchChange(projects: ReadonlyArray<Project>) {
+		for (const project of projects) {
+			this.templateService.generateTemplate(project);
+		}
 	}
 
 	private _addProject(project: Project) {

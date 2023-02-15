@@ -1,26 +1,22 @@
-import { IDisposable } from 'core';
-import { Project } from './project';
-
 
 export type MonorepoType = 'rush' | 'turbo';
 export type Bundler = 'webpack' | 'vite';
 
 export interface InitializeOptions {
 	name: string;
+	rootPath: string;
 	monorepo: MonorepoType | null;
-	withMicroFrontendClient: boolean;
-	withGraphQLServer: boolean;
+	graphQL: string;
+	microFrontendClient: string;
+	appHomeDir: string;
 }
 
 
 
 export interface IWorkspace {
 	_serviceBrand: undefined;
-	init(): void;
-	listProject(): Project;
-	createProject(): IDisposable;
-	removeProject(project: Project): IDisposable;
 
+	init(): Promise<void>;
 }
 
 

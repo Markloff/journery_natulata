@@ -11,6 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Workspace = void 0;
 const core_1 = require("core");
@@ -18,6 +27,7 @@ const environment_1 = require("../service/environment/environment");
 const templateService_1 = require("../service/template/templateService");
 const container_1 = require("./container");
 const fileService_1 = require("../service/file/fileService");
+const project_1 = require("../base/project/project");
 let Workspace = class Workspace {
     constructor(instantiationService, environmentService, templateService, fileService) {
         this.instantiationService = instantiationService;
@@ -28,13 +38,25 @@ let Workspace = class Workspace {
         this.onProjectChange = this._onProjectChange.event;
     }
     init() {
-        const { monorepo, withGraphQLServer, withMicroFrontendClient, rootPath, name } = this.environmentService;
-        this.fileService.createDictionary(rootPath);
-        if (monorepo === null) {
-            const container = new container_1.NoRelationshipContainer(rootPath);
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            const { monorepo, withGraphQLServer, withMicroFrontendClient, rootPath } = this.environmentService;
+            yield this.templateService.generateMetaTemplate();
+            if (monorepo === null) {
+                const container = new container_1.NoRelationshipContainer(rootPath);
+                if (withMicroFrontendClient) {
+                    container.addProject((0, project_1.getDefaultProject)(project_1.ProjectType.MicroFrontendClient));
+                }
+                if (withGraphQLServer) {
+                    container.addProject((0, project_1.getDefaultProject)(project_1.ProjectType.GraphQLServer));
+                }
+                this._dispatchChange(container.projects);
+            }
+        });
     }
-    _dispatchChange() {
+    _dispatchChange(projects) {
+        for (const project of projects) {
+            this.templateService.generateTemplate(project);
+        }
     }
     _addProject(project) {
     }

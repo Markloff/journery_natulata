@@ -3,8 +3,9 @@ import { MonorepoType } from '../base/workspace/workspace';
 // import { Graph } from 'core/lib/core/instantiation/common/graph';
 import { Project, ProjectType } from '../base/project/project';
 import * as glob from 'fast-glob';
-import { relative, resolve } from 'node:path';
+import { dirname, relative, resolve } from 'node:path';
 import { pathExistsSync } from 'fs-extra';
+import { ProjectCollection } from '../base/project/projectCollection';
 
 const NOT_MONOREPO = 'NOT_MONOREPO';
 const REACT = 'React';
@@ -22,11 +23,6 @@ interface IContainer {
 }
 
 namespace Utils {
-	export const getPathRelativeDepth = (root: string, path: string): number => {
-		const relativePath = relative(root, path);
-		return relativePath.split('/').length - 1;
-	}
-
 	export const identifyProjectType = (rootPath: string): ProjectType => {
 		const packageJson = require(resolve(rootPath, PACKAGE_JSON));
 		const configReactAsDevDependency = packageJson.devDependencies[REACT] || packageJson.peerDependencies[REACT];
@@ -49,7 +45,7 @@ export class NoRelationshipContainer implements IContainer {
 	monorepo: NOT_MONOREPO = NOT_MONOREPO;
 	maxDepth = 1;
 
-	private readonly projectStore: Graph<Project> = new Graph<Project>(node => node.id);
+	private readonly projectCollection = new ProjectCollection(node => node.id);
 
 	constructor(private readonly rootPath: string) {
 		this.identifyProjects();
@@ -61,11 +57,12 @@ export class NoRelationshipContainer implements IContainer {
 
 	addProject(project: Project): IDisposable {
 		this.identifyProjects();
-		if(this.projectStore.lookup(project)) {
+		if(this.projectCollection.has(project)) {
 			throw new Error(`Project type ${project.type} with name ${project.name} already existing`);
 		}
-		const node = this.projectStore.lookupOrInsertNode(project);
-		return toDisposable(() => this.projectStore.removeNode(node.data));
+		project.hook(this.rootPath);
+		const node = this.projectCollection.lookupOrInsert(project);
+		return toDisposable(() => this.projectCollection.remove(node));
 	}
 
 	private identifyProjects() {
@@ -73,48 +70,22 @@ export class NoRelationshipContainer implements IContainer {
 		if (entries.length === 0) return;
 		for (let i = 0; i < entries.length; i++) {
 			const project = this.identifyProjectByPackageJsonPath(entries[i]);
-			this.projectStore.lookupOrInsertNode(project);
+			this.projectCollection.lookupOrInsert(project);
 		}
 	}
 
 	private identifyProjectByPackageJsonPath(path: string): Project {
-		const depth = Utils.getPathRelativeDepth(this.rootPath, path);
 		const packageJson = require(path);
-		return new Project(path, packageJson.name, Utils.identifyProjectType(packageJson), depth);
+		const project = new Project(packageJson.name, Utils.identifyProjectType(packageJson), dirname(relative(this.rootPath, path)));
+		project.hook(this.rootPath);
+		return project;
 	}
 
 	get projects(): ReadonlyArray<Project> {
-		return [];
+		const projectsSnapshot: Array<Project> = [];
+		for (const project of this.projectCollection) {
+			projectsSnapshot.push(project);
+		}
+		return projectsSnapshot;
 	}
 }
-
-
-//
-// class Container implements IContainer {
-// 	monorepo: MonorepoType = 'turbo';
-//
-// 	constructor(
-// 		private readonly rootPath: string
-// 	) {
-//
-// 	}
-//
-// 	addProject(name: string, type: ProjectType): IDisposable {
-// 		const graph = this.buildGraph();
-// 		graph.lookupOrInsertNode(createProject(name, type));
-// 	}
-//
-// 	removeProject(name: string): IDisposable {
-//
-// 	}
-//
-// 	private buildGraph(): Graph<Project> {
-// 		const graph = new Graph<Project>(node => node.id);
-//
-// 	}
-// }
-
-
-
-
-

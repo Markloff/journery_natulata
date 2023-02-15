@@ -14,11 +14,12 @@ export declare class NoRelationshipContainer implements IContainer {
     private readonly rootPath;
     monorepo: NOT_MONOREPO;
     maxDepth: number;
-    private readonly projectStore;
+    private readonly projectCollection;
     constructor(rootPath: string);
     removeProject(projects: Project): IDisposable;
     addProject(project: Project): IDisposable;
     private identifyProjects;
     private identifyProjectByPackageJsonPath;
+    get projects(): ReadonlyArray<Project>;
 }
 export {};

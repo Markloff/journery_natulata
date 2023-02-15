@@ -1,6 +1,9 @@
 #! /usr/bin/env node
-import { Command } from 'commander'
-import { application } from 'natula-core';
+import { Command } from 'commander';
+import { application, getDefaultProjectName, ProjectType } from 'natula-core';
+import { basename } from 'node:path';
+import { cwd } from 'node:process';
+import { DEFAULT_APP_HOME } from './const';
 
 const program = new Command()
 
@@ -22,18 +25,21 @@ interface InitCommandOptions {
 
 program
 	.command('init')
-	.argument('<name>')
 	.option('--monorepo <monorepo>', 'monorepo type', null)
-	.option('--mfe', 'with micro front end client', true)
-	.option('--graphQL', 'with graphQL server', false)
+	.option('--mfe [name]', 'create micro frontend client', getDefaultProjectName(ProjectType.MicroFrontendClient))
+	.option('--graphql <name>', 'with graphQL server', '')
 	.option('-b, --branch')
-	.action((name: string, options: InitCommandOptions) => {
-		const { monorepo = null, graphQL = false, mfe = true } = options;
+	.action((options: Omit<InitCommandOptions, 'graphQL'> & { graphql: string }) => {
+		const { monorepo = null, graphql, mfe } = options;
+		const rootPath = cwd();
+		const appHomeDir = process.env.AWF_HOME || DEFAULT_APP_HOME();
 		application.executeCommand('init', {
-			name,
+			name: basename(rootPath),
+			rootPath,
 			monorepo,
-			withGraphQLServer: graphQL,
-			withMicroFrontendClient: mfe
+			graphQL: graphql,
+			microFrontendClient: mfe,
+			appHomeDir,
 		});
 	})
 

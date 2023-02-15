@@ -6,10 +6,16 @@ export declare enum ProjectType {
     NodePackage = "NodePackage"
 }
 export declare class Project {
-    path: string;
+    relativePath: string;
     name: string;
-    depth: number;
+    containerDir: string;
     type: ProjectType;
-    constructor(path: string, name: string, type: ProjectType, depth: number);
+    constructor(name: string, type: ProjectType, relativePath?: string);
+    hook(containerDir: string, relativePath?: string): void;
+    get hooked(): boolean;
     get id(): string;
+    get depth(): number;
 }
+export declare const getDefaultProjectName: (type: ProjectType) => string;
+export declare const getDefaultProject: (type: ProjectType) => Project;
+export declare const createProject: (name: string, type: ProjectType) => Project;

@@ -1,2 +1,3 @@
+import { getDefaultProjectName, ProjectType } from './base/project/project';
 declare const application: import("./service").Service;
-export { application, };
+export { application, getDefaultProjectName, ProjectType };

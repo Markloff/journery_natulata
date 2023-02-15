@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createService = exports.Service = void 0;
 const core_1 = require("core");
-const node_path_1 = require("node:path");
 const environment_1 = require("./service/environment/environment");
 const workspace_1 = require("./workspace/workspace");
 const templateService_1 = require("./service/template/templateService");
@@ -21,12 +20,12 @@ core_1.CommandsRegistry.registerCommand('init', (accessor, args) => __awaiter(vo
     const [config] = args;
     const instantiationService = accessor.get(core_1.IInstantiationService);
     const logService = accessor.get(core_1.ILogService);
-    const environmentService = new environment_1.WorkspaceEnvironment(Object.assign(Object.assign({}, config), { rootPath: (0, node_path_1.resolve)(config.name) }));
+    const environmentService = new environment_1.WorkspaceEnvironment(config);
     const templateService = new templateService_1.TemplateService(environmentService);
     const fileService = new fileService_1.FileService();
     const workspace = new workspace_1.Workspace(instantiationService, environmentService, templateService, fileService);
     try {
-        workspace.init();
+        yield workspace.init();
     }
     catch (err) {
         logService.error(`AFW init error: ${err.message}`);

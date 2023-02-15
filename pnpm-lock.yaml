@@ -65,21 +65,31 @@ importers:
   apps/natula-core:
     specifiers:
       '@types/fs-extra': ^11.0.1
+      '@types/lodash': ^4.14.191
       '@types/node': ^17.0.21
       core: workspace:*
+      enquirer: ^2.3.6
+      execa: ^5.0.0
       fast-glob: ^3.2.12
       fs-extra: ^11.1.0
-      template-generator: 'workspace: *'
+      hygen: ^6.2.11
+      lodash: ^4.17.21
+      toml: ^3.0.0
       tsconfig: workspace:*
       typescript: ^4.9.3
     dependencies:
       core: link:../../packages/core
+      enquirer: 2.3.6
+      execa: 5.1.1
       fast-glob: 3.2.12
       fs-extra: 11.1.0
-      template-generator: link:../../packages/template-generator
+      hygen: 6.2.11
+      lodash: 4.17.21
+      toml: 3.0.0
       typescript: 4.9.3
     devDependencies:
       '@types/fs-extra': 11.0.1
+      '@types/lodash': 4.14.191
       '@types/node': 17.0.21
       tsconfig: link:../../packages/tsconfig
 
@@ -190,23 +200,6 @@ importers:
       tsc-alias: 1.6.4
       tslib: 2.3.1
       typescript: 4.9.3
-
-  packages/template-generator:
-    specifiers:
-      '@types/node': ^16.18.12
-      enquirer: ^2.3.6
-      execa: ^5.0.0
-      hygen: ^6.2.11
-      tsconfig: workspace:*
-      typescript: ^4.9.5
-    dependencies:
-      enquirer: 2.3.6
-      execa: 5.1.1
-      hygen: 6.2.11
-    devDependencies:
-      '@types/node': 16.18.12
-      tsconfig: link:../tsconfig
-      typescript: 4.9.5
 
   packages/tsconfig:
     specifiers: {}
@@ -632,6 +625,10 @@ packages:
       '@types/node': 17.0.21
     dev: false
 
+  /@types/lodash/4.14.191:
+    resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
+    dev: true
+
   /@types/mdast/3.0.10:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}
     dependencies:
@@ -660,10 +657,6 @@ packages:
 
   /@types/node/16.11.7:
     resolution: {integrity: sha512-QB5D2sqfSjCmTuWcBWyJ+/44bcjO7VbjSbOE0ucoVbAsSNQc4Lt6QkgkVXkTDwkL4z/beecZNDvVX15D4P8Jbw==}
-    dev: true
-
-  /@types/node/16.18.12:
-    resolution: {integrity: sha512-vzLe5NaNMjIE3mcddFVGlAXN1LEWueUsMsOJWaT6wWMJGyljHAWHznqfnKUQWGzu7TLPrGvWdNAsvQYW+C0xtw==}
     dev: true
 
   /@types/node/17.0.21:
@@ -3041,7 +3034,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols/4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -4931,6 +4923,10 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
+
+  /toml/3.0.0:
+    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
+    dev: false
 
   /tough-cookie/4.0.0:
     resolution: {integrity: sha512-tHdtEpQCMrc1YLrMaqXXcj6AxhYi/xgit6mZu1+EDWUn+qhUf8wMQoFIy9NXuq23zAwtcB0t/MjACGR18pcRbg==}

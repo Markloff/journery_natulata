@@ -30,3 +30,4 @@ export * from './type';
 export * from './uint';
 export * from './uri';
 export * from './uuid';
+export { memoize, throttle, debounce } from './decorators';

@@ -25,17 +25,14 @@ CommandsRegistry.registerCommand('init', async (accessor, args: [InitializeOptio
 
 	const instantiationService = accessor.get(IInstantiationService);
 	const logService = accessor.get(ILogService);
-	const environmentService = new WorkspaceEnvironment({
-		...config,
-		rootPath: resolve(config.name),
-	});
+	const environmentService = new WorkspaceEnvironment(config);
 	const templateService = new TemplateService(environmentService);
 	const fileService = new FileService();
 
 	const workspace = new Workspace(instantiationService, environmentService, templateService, fileService);
 
 	try {
-		workspace.init();
+		await workspace.init();
 	} catch (err) {
 		logService.error(`AFW init error: ${err.message}`);
 	}
